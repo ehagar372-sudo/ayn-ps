@@ -50,38 +50,38 @@ export function FilterBar({
       className="glass flex flex-col gap-4 rounded-2xl p-4 xl:flex-row xl:items-end"
     >
       <div className="grid flex-1 grid-cols-1 gap-3 sm:grid-cols-3">
-        <Field label="تصفية حسب نوع الحادث">
+        <Field label="نوع الحادث">
           <select
             className={selectClass}
             value={filters.type}
             onChange={(e) => set('type', e.target.value)}
           >
             <option value="all">الكل</option>
-            <option value="fight">خناقة / مشاجرة</option>
+            <option value="fight">مشاجرة / خناقة</option>
             <option value="traffic">حادث سير</option>
-            <option value="fall">شخص أغمى عليه / سقط</option>
+            <option value="fall">حالة طبية / سقوط شخص</option>
             <option value="suspicious">حركة مشبوهة</option>
           </select>
         </Field>
-        <Field label="تصفية حسب الجهة المستهدفة">
+        <Field label="توجيه البلاغ">
           <select
             className={selectClass}
             value={filters.agency}
             onChange={(e) => set('agency', e.target.value)}
           >
             <option value="all">الكل</option>
-            <option value="interior">وزارة الداخلية</option>
-            <option value="ambulance">الإسعاف / المستشفيات</option>
+            <option value="interior">وزارة الداخلية / النجدة</option>
+            <option value="ambulance">هيئة الإسعاف / المستشفيات</option>
           </select>
         </Field>
-        <Field label="تصفية حسب مستوى الخطورة">
+        <Field label="مستوى الخطورة">
           <select
             className={selectClass}
             value={filters.severity}
             onChange={(e) => set('severity', e.target.value)}
           >
             <option value="all">الكل</option>
-            <option value="high">عالي جداً</option>
+            <option value="high">حرج جداً</option>
             <option value="medium">متوسط</option>
             <option value="low">منخفض</option>
           </select>
@@ -116,7 +116,7 @@ export function FilterBar({
             aria-hidden
           />
           <span className="whitespace-nowrap">
-            تفعيل الفلترة الذكية للبلاغات الكاذبة
+            تفعيل نظام الفلترة الذكية للبلاغات الكاذبة
             <span className="ms-1 text-muted-foreground" dir="ltr">
               (AI False Alarm Filter)
             </span>
@@ -133,7 +133,7 @@ export function FilterBar({
             type="search"
             value={filters.query}
             onChange={(e) => set('query', e.target.value)}
-            placeholder="البحث برقم الكاميرا أو الموقع..."
+            placeholder="البحث بالمنطقة، رقم الكاميرا، أو رمز الحادث..."
             className="h-10 w-full rounded-xl border border-border bg-secondary/60 pe-10 ps-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-cyan/60 focus:ring-2 focus:ring-cyan/20"
           />
         </label>

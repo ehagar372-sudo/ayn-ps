@@ -1,6 +1,6 @@
 'use client'
 
-import { BellRing, CheckCircle2, MapPin, Radio, Send, XCircle } from 'lucide-react'
+import { BellRing, CheckCircle2, MapPin, Navigation, Radio, Send, XCircle } from 'lucide-react'
 import { SEVERITY_CLASS, type Alert } from '@/lib/surveillance-data'
 
 const ACTION_STYLE = {
@@ -44,14 +44,30 @@ function AlertCard({
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
         <span className="flex items-center gap-1">
           <MapPin className="size-3.5" aria-hidden />
-          {alert.location} - {alert.camera}
+          {alert.camera} - {alert.location}
         </span>
-        <span className="font-mono tabular-nums">| {alert.time}</span>
+        <span className="tabular-nums">| {alert.time}</span>
       </div>
 
       <div className={`flex items-center gap-2 rounded-lg border px-2.5 py-1.5 text-xs font-semibold ${sev.bg} ${sev.border} ${sev.text}`}>
         <BellRing className="size-3.5 shrink-0" aria-hidden />
         <span className="text-pretty">{alert.agencyLabel}</span>
+      </div>
+
+      <div className="flex items-center gap-3 rounded-lg border border-border bg-background/60 px-2.5 py-2">
+        <div className="relative flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-md border border-cyan/30 bg-cyan/5">
+          <span className="absolute inset-0 bg-[linear-gradient(var(--border)_1px,transparent_1px),linear-gradient(90deg,var(--border)_1px,transparent_1px)] bg-[size:6px_6px] opacity-60" />
+          <span className="relative size-2 rounded-full bg-cyan text-cyan animate-pulse-dot" />
+        </div>
+        <div className="flex min-w-0 flex-col gap-0.5 text-[11px]">
+          <span className="flex items-center gap-1 font-semibold">
+            <Navigation className="size-3 text-cyan" aria-hidden />
+            الموقع الجغرافي: {alert.gps.district}
+          </span>
+          <span className="font-mono tabular-nums text-muted-foreground" dir="ltr">
+            {alert.gps.lat} · {alert.gps.lng}
+          </span>
+        </div>
       </div>
 
       <div className="h-1 w-full overflow-hidden rounded-full bg-secondary">

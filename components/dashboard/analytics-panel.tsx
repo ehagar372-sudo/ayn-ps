@@ -1,4 +1,5 @@
 import { Activity, Clock3, Cpu, ShieldOff } from 'lucide-react'
+import { WEEKLY_TREND } from '@/lib/surveillance-data'
 
 const HOURLY = [3, 5, 4, 7, 9, 6, 8, 12, 15, 11, 14, 18, 16, 13, 10, 12, 17, 21, 24, 19, 22, 26, 23, 20]
 
@@ -13,16 +14,17 @@ const KPIS = [
   { icon: Activity, label: 'حوادث اليوم', value: '312', delta: '+8%', tone: 'text-foreground' },
   { icon: ShieldOff, label: 'بلاغات كاذبة مُستبعدة', value: '84', delta: '27%', tone: 'text-cyan' },
   { icon: Clock3, label: 'متوسط زمن الاستجابة', value: '2:41', delta: 'دقيقة', tone: 'text-resolved' },
-  { icon: Cpu, label: 'دقة النموذج', value: '97.3%', delta: 'آخر 24س', tone: 'text-cyan' },
+  { icon: Cpu, label: 'دقة النموذج', value: '98.4%', delta: 'آخر 24س', tone: 'text-cyan' },
 ]
 
 export function AnalyticsPanel() {
   const max = Math.max(...HOURLY)
+  const weeklyMax = Math.max(...WEEKLY_TREND.map((d) => d.before))
   return (
     <section aria-labelledby="analytics-title" className="glass rounded-2xl p-4">
       <h2 id="analytics-title" className="mb-4 text-sm font-bold">
-        لوحة التحليلات التفصيلية
-        <span className="ms-2 text-xs font-normal text-muted-foreground">آخر 24 ساعة</span>
+        سجل الحوادث والتحليلات
+        <span className="ms-2 text-xs font-normal text-muted-foreground">مؤشرات الأداء الحية</span>
       </h2>
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
@@ -64,6 +66,34 @@ export function AnalyticsPanel() {
             <span>12</span>
             <span>18</span>
             <span>23</span>
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-border bg-secondary/40 p-3 lg:col-span-2">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-xs">
+            <span className="font-semibold">تراجع الحوادث المتفاقمة أسبوعياً بفضل الرصد المبكر</span>
+            <span className="flex items-center gap-3 text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <span className="size-2 rounded-sm bg-border" /> قبل التفعيل
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="size-2 rounded-sm bg-cyan" /> بعد التفعيل
+              </span>
+              <span className="rounded-md border border-resolved/40 bg-resolved/10 px-2 py-0.5 font-semibold text-resolved" dir="ltr">
+                -47%
+              </span>
+            </span>
+          </div>
+          <div className="grid grid-cols-7 gap-2" role="img" aria-label="مقارنة أسبوعية لعدد الحوادث المتفاقمة قبل وبعد تفعيل النظام">
+            {WEEKLY_TREND.map((d) => (
+              <div key={d.day} className="flex flex-col items-center gap-1.5">
+                <div className="flex h-28 w-full items-end justify-center gap-1">
+                  <div className="w-1/3 rounded-t-sm bg-border" style={{ height: `${(d.before / weeklyMax) * 100}%` }} title={`قبل: ${d.before}`} />
+                  <div className="w-1/3 rounded-t-sm bg-cyan shadow-[0_0_10px_-2px_var(--cyan)]" style={{ height: `${(d.after / weeklyMax) * 100}%` }} title={`بعد: ${d.after}`} />
+                </div>
+                <span className="text-[10px] text-muted-foreground">{d.day}</span>
+              </div>
+            ))}
           </div>
         </div>
 

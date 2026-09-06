@@ -43,7 +43,7 @@
 
 :root {
   color-scheme: dark;
-  --background: #0a0e17;
+  --background: #090d16;
   --foreground: #e6edf7;
   --card: #131c2e;
   --card-foreground: #e6edf7;
@@ -59,8 +59,8 @@
   --accent-foreground: #e6edf7;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #23324d;
-  --input: #23324d;
+  --border: #1e293b;
+  --input: #1e293b;
   --ring: #00f2fe;
   --radius: 0.75rem;
 
@@ -194,6 +194,48 @@
   94% {
     opacity: 1;
   }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes flow-dash {
+  to {
+    background-position: -24px 0;
+  }
+}
+
+@keyframes eye-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 4px var(--cyan));
+  }
+  50% {
+    filter: drop-shadow(0 0 14px var(--cyan));
+  }
+}
+
+@utility animate-fade-up {
+  animation: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@utility animate-eye-glow {
+  animation: eye-glow 2.4s ease-in-out infinite;
+}
+
+@utility flow-line {
+  background-image: linear-gradient(90deg, var(--cyan) 50%, transparent 50%);
+  background-size: 12px 2px;
+  background-repeat: repeat-x;
+  animation: flow-dash 0.8s linear infinite;
 }
 
 @utility animate-pulse-dot {

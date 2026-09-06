@@ -54,7 +54,7 @@ export function IncidentLogs({ aiFilterEnabled }: { aiFilterEnabled: boolean }) 
             }`}
           >
             <FileText className="size-3.5" aria-hidden />
-            سجل الحوادث الكامل
+            سجل الحوادث والتحليلات
           </button>
           <button
             role="tab"
@@ -66,7 +66,7 @@ export function IncidentLogs({ aiFilterEnabled }: { aiFilterEnabled: boolean }) 
             }`}
           >
             <Sparkles className="size-3.5" aria-hidden />
-            البلاغات المفلترة (الكاذبة)
+            البلاغات المفلترة كاذبة
             <span className="rounded-full bg-secondary px-1.5 font-mono text-[10px] text-foreground">{filteredCount}</span>
           </button>
         </div>
@@ -116,10 +116,7 @@ export function IncidentLogs({ aiFilterEnabled }: { aiFilterEnabled: boolean }) 
                     {row.aiFiltered && (
                       <span className="inline-flex items-center gap-1 rounded-md border border-cyan/40 bg-cyan/10 px-2 py-0.5 text-[11px] font-semibold text-cyan">
                         <Sparkles className="size-3" aria-hidden />
-                        تم الاستبعاد بواسطة الذكاء الاصطناعي
-                        <span className="text-cyan/70" dir="ltr">
-                          (Fake Alert Filtered)
-                        </span>
+                        <span dir="ltr">AI False Alarm Filter</span>
                       </span>
                     )}
                   </div>
