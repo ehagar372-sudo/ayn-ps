@@ -20,12 +20,24 @@
 - Browser sign-out clears the session path and redirects to `/sign-in`; the protected dashboard is not reachable from the signed-out browser session.
 - Dashboard sign-out control is wired to Better Auth and redirects to `/sign-in`.
 
+## Completed
+- Dashboard route now performs a server-side session check and redirects signed-out users to `/sign-in`.
+- Camera and incident list endpoints now require an authenticated session, matching their protected mutation endpoints.
+- Camera tiles explicitly identify the current assets as `STILL / OFFLINE`; no live stream is claimed.
+
 ## Pending
-- Complete browser sign-out and post-signout protected-route redirect verification after the latest sign-out control edit.
-- Connect dashboard cards to API responses instead of the current seeded presentation data.
-- Live AI detection and real camera streaming remain unconfigured and unverified; the UI continues to use generated stills and seeded presentation data.
+- Connect dashboard cards, camera tiles, and incident logs to database/API responses instead of seeded presentation data.
+- Configure and test a real AI inference provider and camera stream source; neither is available in the current project configuration.
+- Add operator-specific ownership/role scoping for incident records after roles are defined.
+
+## Verified in this audit
+- `BETTER_AUTH_SECRET` is present in project Vars and is read only through `process.env`.
+- The protected dashboard and read APIs compile with server-side authorization checks.
+- Browser verification: signed-out `/` redirects to `/sign-in`; signed-out `GET /api/cameras` returns `401 {"error":"غير مصرح"}`.
+- `npx tsc --noEmit` passed and `npm run build` compiled successfully. The build command emitted Better Auth's default-secret warning because direct Bash processes do not receive v0-managed Vars; the running preview uses the configured project environment.
+- No live AI detection, live streaming, or deployment is claimed without configured external services.
 
 ## Notes
 - No secret is hardcoded in source. Authentication uses `BETTER_AUTH_SECRET` from project Vars.
 - The shared Neon database contains verification records created during CRUD testing.
-- Incident mutations currently accept nullable `userId`; operator-specific ownership scoping remains pending role requirements.
+- Camera assets remain generated still images and are intentionally labeled unavailable/offline for streaming purposes.
