@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { authClient } from '@/lib/auth-client'
 import { AppHeader, type LayoutMode, type View } from './header'
 import { FilterBar, type Filters } from './filter-bar'
 import { CameraGrid } from './camera-grid'
@@ -36,6 +38,7 @@ function manualAlert(camId: string | null, seq: number): Alert {
 }
 
 export function Dashboard() {
+  const router = useRouter()
   const [view, setView] = useState<View>('dashboard')
   const [layout, setLayout] = useState<LayoutMode>('2x2')
   const [filters, setFilters] = useState<Filters>({
@@ -73,6 +76,12 @@ export function Dashboard() {
     setResolved((n) => n + 1)
   }
 
+  const handleSignOut = async () => {
+    await authClient.signOut()
+    router.replace('/sign-in')
+    router.refresh()
+  }
+
   const dispatchManual = (camId: string | null) => {
     setAlerts((prev) => [manualAlert(camId, manualSeq), ...prev])
     setManualSeq((n) => n + 1)
@@ -97,6 +106,7 @@ export function Dashboard() {
         layout={layout}
         onLayoutChange={setLayout}
         onManualDispatch={() => dispatchManual(focusedCam)}
+        onSignOut={handleSignOut}
       />
 
       {view === 'pitch' ? (

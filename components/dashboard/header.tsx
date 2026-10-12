@@ -1,6 +1,6 @@
 'use client'
 
-import { Eye, LayoutGrid, MonitorPlay, Presentation, Siren } from 'lucide-react'
+import { Eye, LayoutGrid, LogOut, MonitorPlay, Presentation, Siren } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 export type View = 'dashboard' | 'pitch'
@@ -43,12 +43,14 @@ export function AppHeader({
   layout,
   onLayoutChange,
   onManualDispatch,
+  onSignOut,
 }: {
   view: View
   onViewChange: (v: View) => void
   layout: LayoutMode
   onLayoutChange: (l: LayoutMode) => void
   onManualDispatch: () => void
+  onSignOut: () => void
 }) {
   const cycleLayout = () => onLayoutChange(LAYOUT_ORDER[(LAYOUT_ORDER.indexOf(layout) + 1) % LAYOUT_ORDER.length])
 
@@ -94,6 +96,16 @@ export function AppHeader({
         </nav>
 
         <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onSignOut}
+            aria-label="تسجيل الخروج"
+            title="تسجيل الخروج"
+            className="flex items-center gap-2 rounded-xl border border-border bg-secondary/60 px-3 py-2 text-sm text-muted-foreground transition-all duration-300 hover:border-police/50 hover:text-police"
+          >
+            <LogOut className="size-4" aria-hidden />
+            <span className="hidden sm:inline">تسجيل الخروج</span>
+          </button>
           <button
             type="button"
             onClick={onManualDispatch}
