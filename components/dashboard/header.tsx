@@ -1,6 +1,7 @@
 'use client'
 
-import { Eye, LayoutGrid, MonitorPlay, Presentation, Siren } from 'lucide-react'
+import { LayoutGrid, LogOut, MonitorPlay, Presentation, Siren } from 'lucide-react'
+import { AinLogo } from '@/components/brand/ain-logo'
 import { useEffect, useState } from 'react'
 
 export type View = 'dashboard' | 'pitch'
@@ -43,12 +44,14 @@ export function AppHeader({
   layout,
   onLayoutChange,
   onManualDispatch,
+  onSignOut,
 }: {
   view: View
   onViewChange: (v: View) => void
   layout: LayoutMode
   onLayoutChange: (l: LayoutMode) => void
   onManualDispatch: () => void
+  onSignOut: () => void
 }) {
   const cycleLayout = () => onLayoutChange(LAYOUT_ORDER[(LAYOUT_ORDER.indexOf(layout) + 1) % LAYOUT_ORDER.length])
 
@@ -56,11 +59,9 @@ export function AppHeader({
     <header className="glass sticky top-0 z-30 flex flex-col gap-3 rounded-2xl px-4 py-3 md:px-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="relative flex size-11 items-center justify-center rounded-xl border border-cyan/40 bg-cyan/10 text-cyan glow-cyan">
-            <Eye className="size-6 animate-eye-glow" aria-hidden />
-            <span className="absolute -end-0.5 -top-0.5 size-2.5 rounded-full bg-cyan animate-pulse-dot" />
-          </div>
-          <div className="flex flex-col">
+          <AinLogo className="text-cyan" />
+          <div className="hidden h-9 w-px bg-border sm:block" />
+          <div className="hidden flex-col sm:flex">
             <h1 className="text-lg font-bold leading-tight text-balance">نظام عين للرصد والتحليل الذكي</h1>
             <p className="text-xs text-muted-foreground" dir="ltr">
               AI Security &amp; Surveillance System
@@ -94,6 +95,16 @@ export function AppHeader({
         </nav>
 
         <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onSignOut}
+            aria-label="تسجيل الخروج"
+            title="تسجيل الخروج"
+            className="flex items-center gap-2 rounded-xl border border-border bg-secondary/60 px-3 py-2 text-sm text-muted-foreground transition-all duration-300 hover:border-police/50 hover:text-police"
+          >
+            <LogOut className="size-4" aria-hidden />
+            <span className="hidden sm:inline">تسجيل الخروج</span>
+          </button>
           <button
             type="button"
             onClick={onManualDispatch}

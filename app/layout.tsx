@@ -19,6 +19,10 @@ export const metadata: Metadata = {
   description:
     'لوحة تحكم نظام عين للرصد الذكي: مراقبة البث المباشر، كشف الحوادث بالذكاء الاصطناعي، والإبلاغ الفوري للجهات المختصة.',
   generator: 'v0.app',
+  icons: {
+    icon: '/ain-logo.svg',
+    apple: '/ain-logo.svg',
+  },
 }
 
 export const viewport: Viewport = {

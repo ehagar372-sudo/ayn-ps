@@ -54,8 +54,8 @@ function CameraTile({
       ))}
 
       <div className="absolute start-2 top-2 flex items-center gap-1.5 rounded-md bg-background/70 px-2 py-1 text-[10px] font-bold tracking-widest backdrop-blur" dir="ltr">
-        <span className="size-2 rounded-full bg-police text-police animate-pulse-dot" />
-        LIVE
+        <span className="size-2 rounded-full bg-suspicious" />
+        STILL / OFFLINE
       </div>
 
       <div className="absolute end-2 top-2 flex flex-col items-end gap-0.5 font-mono text-[10px] text-foreground/80" dir="ltr">
