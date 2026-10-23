@@ -27,7 +27,7 @@ export async function createSupervisor(input: { name: string; email: string; pas
   const [existing] = await db.select({ id: user.id }).from(user).where(eq(user.email, email)).limit(1)
   if (existing) throw new Error('هذا البريد الإلكتروني مستخدم بالفعل.')
   const result = await auth.api.signUpEmail({ body: { name, email, password: input.password } })
-  if (result.error || !result.user) throw new Error('تعذر إنشاء حساب المشرف.')
+  if (!result.user) throw new Error('تعذر إنشاء حساب المشرف.')
   await db.update(user).set({ role: 'supervisor', status: 'active' }).where(eq(user.id, result.user.id))
   revalidatePath('/supervisor/manage')
 }
