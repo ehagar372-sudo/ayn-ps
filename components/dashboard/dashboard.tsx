@@ -4,10 +4,13 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { authClient } from '@/lib/auth-client'
 import { AppHeader, type LayoutMode, type View } from './header'
+import { Sidebar } from './sidebar'
 import { FilterBar, type Filters } from './filter-bar'
 import { CameraGrid } from './camera-grid'
+import { MapOverview } from './map-overview'
 import { AnalyticsPanel } from './analytics-panel'
 import { AlertFeed } from './alert-feed'
+import { RecentEvents } from './recent-events'
 import { IncidentLogs } from './incident-logs'
 import { PitchView } from '@/components/pitch/pitch-view'
 import { CAMERAS, INCOMING_ALERTS, INITIAL_ALERTS, type Alert } from '@/lib/surveillance-data'
@@ -52,6 +55,7 @@ export function Dashboard() {
   const [resolved, setResolved] = useState(0)
   const [manualSeq, setManualSeq] = useState(1)
   const [focusedCam, setFocusedCam] = useState<string | null>(null)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     let i = 0
@@ -88,6 +92,23 @@ export function Dashboard() {
     setView('dashboard')
   }
 
+  // Sidebar links scroll to sections that already exist on the dashboard page.
+  const scrollToSection = (sectionId: string) => {
+    const go = () => {
+      if (sectionId === 'top') {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        return
+      }
+      document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+    if (view !== 'dashboard') {
+      setView('dashboard')
+      setTimeout(go, 120)
+    } else {
+      go()
+    }
+  }
+
   const q = filters.query.trim()
   const visibleAlerts = alerts.filter((a) => {
     if (filters.type !== 'all' && a.type !== filters.type) return false
@@ -98,36 +119,66 @@ export function Dashboard() {
     return true
   })
 
+  const cameraNormal = CAMERAS.filter((c) => c.status === 'normal').length
+
   return (
-    <main className="mx-auto flex max-w-[1800px] flex-col gap-4 p-4 md:p-6">
-      <AppHeader
+    <div className="mx-auto flex max-w-[1800px] items-start gap-4 p-3 md:p-4">
+      <Sidebar
         view={view}
         onViewChange={setView}
-        layout={layout}
-        onLayoutChange={setLayout}
-        onManualDispatch={() => dispatchManual(focusedCam)}
+        onNavigate={scrollToSection}
         onSignOut={handleSignOut}
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        cameraTotal={CAMERAS.length}
+        cameraNormal={cameraNormal}
+        activeAlerts={visibleAlerts.length}
+        resolvedCount={resolved}
       />
 
-      {view === 'pitch' ? (
-        <PitchView onOpenDashboard={() => setView('dashboard')} />
-      ) : (
-        <div key="dashboard" className="flex flex-col gap-4 animate-fade-up">
-          <FilterBar filters={filters} onChange={setFilters} />
+      <main className="flex min-w-0 flex-1 flex-col gap-4">
+        <AppHeader
+          view={view}
+          onViewChange={setView}
+          layout={layout}
+          onLayoutChange={setLayout}
+          onManualDispatch={() => dispatchManual(focusedCam)}
+          onSignOut={handleSignOut}
+          onMenuClick={() => setMenuOpen(true)}
+        />
 
-          <div className="grid gap-4 xl:grid-cols-[65fr_35fr]">
-            <div className="flex min-w-0 flex-col gap-4">
-              <CameraGrid focusedId={focusedCam} onFocus={setFocusedCam} onDispatch={dispatchManual} layout={layout} />
-              <AnalyticsPanel />
+        {view === 'pitch' ? (
+          <PitchView onOpenDashboard={() => setView('dashboard')} />
+        ) : (
+          <div key="dashboard" className="flex flex-col gap-4 animate-fade-up">
+            <FilterBar filters={filters} onChange={setFilters} />
+
+            <div className="grid gap-4 xl:grid-cols-[65fr_35fr]">
+              <div className="flex min-w-0 flex-col gap-4">
+                <CameraGrid
+                  focusedId={focusedCam}
+                  onFocus={setFocusedCam}
+                  onDispatch={dispatchManual}
+                  layout={layout}
+                />
+                <MapOverview
+                  focusedId={focusedCam}
+                  onFocus={setFocusedCam}
+                  activeAlerts={visibleAlerts.length}
+                  resolvedCount={resolved}
+                />
+                <AnalyticsPanel />
+              </div>
+              <div className="flex min-w-0 flex-col gap-4">
+                <AlertFeed alerts={visibleAlerts} resolvedCount={resolved} onAction={handleAction} />
+                <RecentEvents onViewAll={() => scrollToSection('sec-logs')} />
+              </div>
             </div>
-            <div className="min-w-0 xl:sticky xl:top-36 xl:self-start">
-              <AlertFeed alerts={visibleAlerts} resolvedCount={resolved} onAction={handleAction} />
-            </div>
+
+            <IncidentLogs aiFilterEnabled={filters.aiFilter} />
           </div>
-
-          <IncidentLogs aiFilterEnabled={filters.aiFilter} />
-        </div>
-      )}
-    </main>
+        )}
+      </main>
+    </div>
   )
 }

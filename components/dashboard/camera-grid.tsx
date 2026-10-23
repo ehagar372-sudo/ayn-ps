@@ -30,18 +30,22 @@ function CameraTile({
       <div className="absolute inset-0 animate-feed-noise">
         <Image
           src={cam.image}
-          alt={`بث مباشر من ${cam.location}`}
+          alt={`لقطة ثابتة من كاميرا ${cam.location}`}
           fill
           sizes="(min-width: 1280px) 30vw, (min-width: 640px) 50vw, 100vw"
-          className="object-cover saturate-[0.7] contrast-[1.05]"
+          className="object-cover saturate-[0.8] contrast-[1.05]"
           priority={cam.number === '01'}
         />
       </div>
-      <div className="pointer-events-none absolute inset-0 scanlines opacity-60" />
+      <div className="pointer-events-none absolute inset-0 scanlines opacity-50" />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-background/40" />
 
       {cam.boxes.map((box) => (
-        <div key={box.label} className="absolute" style={{ top: box.top, right: box.right, width: box.width, height: box.height }}>
+        <div
+          key={box.label}
+          className="absolute"
+          style={{ top: box.top, right: box.right, width: box.width, height: box.height }}
+        >
           <div className={`bbox inset-0 ${SEVERITY_CLASS[box.severity].text}`} />
           <span
             className={`absolute -top-6 end-0 whitespace-nowrap rounded-sm px-1.5 py-0.5 text-[10px] font-bold text-destructive-foreground ${
@@ -53,14 +57,19 @@ function CameraTile({
         </div>
       ))}
 
-      <div className="absolute start-2 top-2 flex items-center gap-1.5 rounded-md bg-background/70 px-2 py-1 text-[10px] font-bold tracking-widest backdrop-blur" dir="ltr">
+      <div
+        className="absolute start-2 top-2 flex items-center gap-1.5 rounded-md bg-background/70 px-2 py-1 text-[10px] font-bold tracking-widest backdrop-blur"
+        dir="ltr"
+      >
         <span className="size-2 rounded-full bg-suspicious" />
         STILL / OFFLINE
       </div>
 
-      <div className="absolute end-2 top-2 flex flex-col items-end gap-0.5 font-mono text-[10px] text-foreground/80" dir="ltr">
-        <span>CAM-{cam.number} · 1080p · 30fps</span>
-        <span className="text-foreground/60">2026-09-07 22:4{cam.number.at(-1)}:1{cam.number.at(0)}</span>
+      <div
+        className="absolute end-2 top-2 rounded-md bg-background/70 px-2 py-1 font-mono text-[10px] text-foreground/80 backdrop-blur"
+        dir="ltr"
+      >
+        CAM-{cam.number}
       </div>
 
       <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-3">
@@ -69,7 +78,9 @@ function CameraTile({
             كاميرا {cam.number} - {cam.location}
           </h3>
           {isAlert ? (
-            <span className={`mt-1 inline-flex items-center gap-1.5 rounded-md border px-2 py-0.5 text-[11px] font-semibold ${sev.bg} ${sev.border} ${sev.text}`}>
+            <span
+              className={`mt-1 inline-flex items-center gap-1.5 rounded-md border px-2 py-0.5 text-[11px] font-semibold ${sev.bg} ${sev.border} ${sev.text}`}
+            >
               <span className="size-1.5 rounded-full bg-current animate-pulse-dot" />
               تنبيه نشط: {cam.alertLabel}
             </span>
@@ -118,7 +129,10 @@ export function CameraGrid({
   layout: LayoutMode
 }) {
   const primaryId = focusedId ?? CAMERAS[0].id
-  const ordered = layout === 'focus' ? [...CAMERAS].sort((a, b) => (a.id === primaryId ? -1 : b.id === primaryId ? 1 : 0)) : CAMERAS
+  const ordered =
+    layout === 'focus'
+      ? [...CAMERAS].sort((a, b) => (a.id === primaryId ? -1 : b.id === primaryId ? 1 : 0))
+      : CAMERAS
 
   const gridClass =
     layout === '2x2'
@@ -128,11 +142,13 @@ export function CameraGrid({
         : 'flex flex-col gap-3'
 
   return (
-    <section aria-labelledby="cams-title" className="glass flex flex-col gap-3 rounded-2xl p-4">
-      <div className="flex items-center justify-between">
+    <section id="sec-cameras" aria-labelledby="cams-title" className="glass flex scroll-mt-24 flex-col gap-3 rounded-2xl p-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 id="cams-title" className="text-sm font-bold">
-          البث المباشر للكاميرات
-          <span className="ms-2 text-xs font-normal text-muted-foreground">4 من 2,450 كاميرا</span>
+          لقطات الكاميرات
+          <span className="ms-2 text-xs font-normal text-muted-foreground">
+            {CAMERAS.length} كاميرات · لقطات ثابتة وبيانات رصد تجريبية
+          </span>
         </h2>
         <span className="rounded-lg border border-border bg-secondary/60 px-2.5 py-1 text-xs text-muted-foreground">
           النمط: <span className="font-semibold text-cyan">{LAYOUT_LABEL[layout]}</span>

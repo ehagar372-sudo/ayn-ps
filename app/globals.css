@@ -29,6 +29,8 @@
   --color-background: var(--background);
 
   --color-cyan: var(--cyan);
+  --color-blue: var(--blue);
+  --color-violet: var(--violet);
   --color-police: var(--police);
   --color-medical: var(--medical);
   --color-suspicious: var(--suspicious);
@@ -43,28 +45,30 @@
 
 :root {
   color-scheme: dark;
-  --background: #090d16;
-  --foreground: #e6edf7;
-  --card: #131c2e;
-  --card-foreground: #e6edf7;
-  --popover: #131c2e;
-  --popover-foreground: #e6edf7;
-  --primary: #00f2fe;
-  --primary-foreground: #04131a;
-  --secondary: #1a2540;
-  --secondary-foreground: #e6edf7;
-  --muted: #1a2540;
-  --muted-foreground: #8b9bb8;
-  --accent: #1a2540;
-  --accent-foreground: #e6edf7;
+  --background: #050a16;
+  --foreground: #e6edf9;
+  --card: #0a1224;
+  --card-foreground: #e6edf9;
+  --popover: #0b1428;
+  --popover-foreground: #e6edf9;
+  --primary: #22d3ee;
+  --primary-foreground: #03121a;
+  --secondary: #0f1a33;
+  --secondary-foreground: #e6edf9;
+  --muted: #0f1a33;
+  --muted-foreground: #8a9bbd;
+  --accent: #0f1a33;
+  --accent-foreground: #e6edf9;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #1e293b;
-  --input: #1e293b;
-  --ring: #00f2fe;
+  --border: #16254a;
+  --input: #16254a;
+  --ring: #22d3ee;
   --radius: 0.75rem;
 
-  --cyan: #00f2fe;
+  --cyan: #22d3ee;
+  --blue: #3b82f6;
+  --violet: #8b5cf6;
   --police: #ef4444;
   --medical: #f59e0b;
   --suspicious: #eab308;
@@ -77,12 +81,13 @@
   }
   html {
     @apply bg-background;
+    scroll-behavior: smooth;
   }
   body {
     @apply bg-background text-foreground font-sans;
     background-image:
-      radial-gradient(ellipse 60% 40% at 80% -10%, rgba(0, 242, 254, 0.08), transparent 60%),
-      radial-gradient(ellipse 50% 40% at 10% 110%, rgba(0, 242, 254, 0.05), transparent 60%);
+      radial-gradient(ellipse 60% 40% at 85% -10%, rgba(59, 130, 246, 0.14), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 8% 110%, rgba(139, 92, 246, 0.1), transparent 60%);
     background-attachment: fixed;
   }
   ::-webkit-scrollbar {
@@ -96,19 +101,24 @@
 }
 
 @utility glass {
-  background: color-mix(in srgb, var(--card) 78%, transparent);
+  background: color-mix(in srgb, var(--card) 82%, transparent);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--border);
+  box-shadow:
+    inset 0 1px 0 rgba(120, 160, 255, 0.05),
+    0 8px 30px -18px rgba(20, 60, 160, 0.45);
 }
 
 @utility glow-cyan {
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--cyan) 40%, transparent),
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--cyan) 40%, transparent),
     0 0 18px color-mix(in srgb, var(--cyan) 25%, transparent);
 }
 
 @utility lift {
-  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1),
     border-color 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   &:hover {
@@ -160,7 +170,11 @@
 
 @keyframes dash-march {
   to {
-    background-position: 100% 0, 0 100%, 0 0, 100% 100%;
+    background-position:
+      100% 0,
+      0 100%,
+      0 0,
+      100% 100%;
   }
 }
 
@@ -247,22 +261,34 @@
 }
 
 @utility animate-feed-noise {
-  animation: feed-noise 0.4s steps(2) infinite, flicker 6s linear infinite;
+  animation:
+    feed-noise 0.4s steps(2) infinite,
+    flicker 6s linear infinite;
 }
 
 @utility bbox {
   position: absolute;
   pointer-events: none;
   border: 1.5px solid currentColor;
-  background-image: linear-gradient(90deg, currentColor 50%, transparent 50%),
+  background-image:
+    linear-gradient(90deg, currentColor 50%, transparent 50%),
     linear-gradient(90deg, currentColor 50%, transparent 50%),
     linear-gradient(0deg, currentColor 50%, transparent 50%),
     linear-gradient(0deg, currentColor 50%, transparent 50%);
   background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
-  background-size: 12px 2px, 12px 2px, 2px 12px, 2px 12px;
-  background-position: 0 0, 0 100%, 0 0, 100% 0;
+  background-size:
+    12px 2px,
+    12px 2px,
+    2px 12px,
+    2px 12px;
+  background-position:
+    0 0,
+    0 100%,
+    0 0,
+    100% 0;
   animation: dash-march 1.2s linear infinite;
-  box-shadow: 0 0 14px color-mix(in srgb, currentColor 45%, transparent),
+  box-shadow:
+    0 0 14px color-mix(in srgb, currentColor 45%, transparent),
     inset 0 0 24px color-mix(in srgb, currentColor 12%, transparent);
   overflow: hidden;
   &::after {
