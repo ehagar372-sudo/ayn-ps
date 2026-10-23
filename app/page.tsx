@@ -1,9 +1,6 @@
-import { Dashboard } from '@/components/dashboard/dashboard'
-import { requireSession } from '@/lib/auth-guard'
-import { redirect } from 'next/navigation'
+import Link from 'next/link'
+import { AinLogo } from '@/components/brand/ain-logo'
 
-export default async function Page() {
-  const session = await requireSession()
-  if (!session) redirect('/sign-in')
-  return <Dashboard />
+export default function Page() {
+  return <main className="min-h-screen bg-[#070b14] text-white"><header className="border-b border-white/10 px-5 py-4"><div className="mx-auto flex max-w-6xl items-center justify-between"><AinLogo /><Link href="/sign-in" className="rounded-lg border border-white/10 px-4 py-2 text-sm text-slate-300">دخول النظام</Link></div></header><section className="mx-auto max-w-6xl px-5 py-24 text-center"><p className="text-sm font-semibold tracking-[0.25em] text-cyan-300">نظام عين للرصد الذكي</p><h1 className="mx-auto mt-6 max-w-4xl text-5xl font-extrabold leading-tight md:text-7xl">مدينة أكثر أماناً،<br /><span className="text-cyan-300">بقرار أسرع.</span></h1><p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-slate-300">منصة موحدة لربط البلاغات المجتمعية بغرفة العمليات، وتحويل الإشارات المهمة إلى استجابة واضحة.</p><div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row"><Link href="/report" className="rounded-xl bg-cyan-300 px-7 py-3.5 font-bold text-slate-950 hover:bg-cyan-200">أرسل بلاغاً</Link><Link href="/sign-in" className="rounded-xl border border-white/15 px-7 py-3.5 font-semibold text-white hover:bg-white/5">دخول المشرفين</Link></div></section></main>
 }
