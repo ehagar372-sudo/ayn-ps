@@ -10,6 +10,9 @@ export type Filters = {
   severity: string
   aiFilter: boolean
   query: string
+  status: string
+  dateFrom: string
+  dateTo: string
 }
 
 const SEVERITY_LABEL: Record<string, string> = {
@@ -98,8 +101,11 @@ export function FilterBar({
     })
   if (filters.query.trim())
     chips.push({ key: 'query', label: `بحث: ${filters.query.trim()}`, clear: () => set('query', '') })
+  if (filters.status !== 'all') chips.push({ key: 'status', label: `الحالة: ${filters.status === 'ongoing' ? 'قيد المتابعة' : 'تم التعامل'}`, clear: () => set('status', 'all') })
+  if (filters.dateFrom) chips.push({ key: 'dateFrom', label: `من: ${filters.dateFrom}`, clear: () => set('dateFrom', '') })
+  if (filters.dateTo) chips.push({ key: 'dateTo', label: `إلى: ${filters.dateTo}`, clear: () => set('dateTo', '') })
 
-  const clearAll = () => onChange({ ...filters, type: 'all', agency: 'all', severity: 'all', query: '' })
+  const clearAll = () => onChange({ ...filters, type: 'all', agency: 'all', severity: 'all', query: '', status: 'all', dateFrom: '', dateTo: '' })
 
   return (
     <section aria-label="أدوات التصفية" className="glass flex flex-col gap-3 rounded-2xl p-4">
@@ -127,6 +133,22 @@ export function FilterBar({
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center xl:ms-auto">
+          <label className="flex h-10 items-center gap-2 rounded-xl border border-border bg-secondary/60 px-3 text-xs text-muted-foreground">
+            الحالة
+            <select value={filters.status} onChange={(e) => set('status', e.target.value)} className="bg-transparent text-foreground outline-none">
+              <option value="all" className="bg-card">الكل</option>
+              <option value="ongoing" className="bg-card">قيد المتابعة</option>
+              <option value="handled" className="bg-card">تم التعامل</option>
+            </select>
+          </label>
+          <label className="flex h-10 items-center gap-2 rounded-xl border border-border bg-secondary/60 px-3 text-xs text-muted-foreground">
+            من
+            <input aria-label="من تاريخ" type="date" value={filters.dateFrom} onChange={(e) => set('dateFrom', e.target.value)} className="min-w-0 bg-transparent text-foreground outline-none" />
+          </label>
+          <label className="flex h-10 items-center gap-2 rounded-xl border border-border bg-secondary/60 px-3 text-xs text-muted-foreground">
+            إلى
+            <input aria-label="إلى تاريخ" type="date" value={filters.dateTo} onChange={(e) => set('dateTo', e.target.value)} className="min-w-0 bg-transparent text-foreground outline-none" />
+          </label>
           <button
             type="button"
             role="switch"

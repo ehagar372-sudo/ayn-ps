@@ -50,6 +50,9 @@ export function Dashboard() {
     severity: 'all',
     aiFilter: true,
     query: '',
+    status: 'all',
+    dateFrom: '',
+    dateTo: '',
   })
   const [alerts, setAlerts] = useState<Alert[]>(INITIAL_ALERTS)
   const [resolved, setResolved] = useState(0)
@@ -115,7 +118,8 @@ export function Dashboard() {
     if (filters.agency !== 'all' && a.agency !== filters.agency) return false
     if (filters.severity !== 'all' && SEVERITY_RANK[a.severity] !== filters.severity) return false
     if (filters.aiFilter && a.confidence < 70) return false
-    if (q && !`${a.location} ${a.camera} ${a.title} ${a.id}`.includes(q)) return false
+    if (filters.status !== 'all' && filters.status !== 'ongoing') return false
+    if (q && !`${a.location} ${a.camera} ${a.title} ${a.id}`.toLocaleLowerCase().includes(q.toLocaleLowerCase())) return false
     return true
   })
 
@@ -160,6 +164,7 @@ export function Dashboard() {
                   onFocus={setFocusedCam}
                   onDispatch={dispatchManual}
                   layout={layout}
+                  query={filters.query}
                 />
                 <MapOverview
                   focusedId={focusedCam}
