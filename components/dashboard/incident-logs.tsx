@@ -138,17 +138,25 @@ export function IncidentLogs({ aiFilterEnabled }: { aiFilterEnabled: boolean }) 
             </label>
             <button
               type="button"
+              onClick={exportExcel}
+              disabled={rows.length === 0}
+              className="flex h-10 items-center gap-1.5 rounded-xl border border-border bg-secondary/60 px-3 text-xs text-muted-foreground transition-colors hover:border-cyan/50 hover:text-foreground disabled:opacity-40"
+            >
+              <Download className="size-3.5" aria-hidden />
+              Excel
+            </button>
+            <button
+              type="button"
               onClick={exportCsv}
               disabled={rows.length === 0}
               className="flex h-10 items-center gap-1.5 rounded-xl border border-border bg-secondary/60 px-3 text-xs text-muted-foreground transition-colors hover:border-cyan/50 hover:text-foreground disabled:opacity-40"
             >
               <Download className="size-3.5" aria-hidden />
-              Excel / CSV
+              CSV
             </button>
             <button type="button" onClick={exportPdf} disabled={rows.length === 0} className="flex h-10 items-center gap-1.5 rounded-xl border border-border bg-secondary/60 px-3 text-xs text-muted-foreground transition-colors hover:border-cyan/50 hover:text-foreground disabled:opacity-40">
               <FileText className="size-3.5" aria-hidden /> PDF
             </button>
-            <button type="button" onClick={exportExcel} disabled={rows.length === 0} className="sr-only">تصدير Excel</button>
           </div>
         </div>
 
