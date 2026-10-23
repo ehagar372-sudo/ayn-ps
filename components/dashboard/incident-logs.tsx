@@ -87,21 +87,27 @@ export function IncidentLogs({ aiFilterEnabled }: { aiFilterEnabled: boolean }) 
     setQuery('')
   }
 
+  const exportRows = () => rows.map((r) => [r.id, INCIDENT_TYPE_LABEL[r.type], r.location, r.time, r.agency, LOG_STATUS_LABEL[r.status]])
+  const download = (content: string, type: string, name: string) => {
+    const url = URL.createObjectURL(new Blob([content], { type }))
+    const a = document.createElement('a'); a.href = url; a.download = name; a.click(); URL.revokeObjectURL(url)
+  }
+  const exportExcel = () => {
+    const esc = (v: string) => `<td>${v.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</td>`
+    const header = ['رقم الحادث', 'نوع الحادث', 'الموقع', 'التوقيت', 'الجهة المبلغة', 'حالة البلاغ']
+    const html = `<table><tr>${header.map((h) => `<th>${h}</th>`).join('')}</tr>${exportRows().map((r) => `<tr>${r.map(esc).join('')}</tr>`).join('')}</table>`
+    download(`<!doctype html><html dir="rtl"><meta charset="utf-8"><body>${html}</body></html>`, 'application/vnd.ms-excel;charset=utf-8', 'ain-incident-report.xls')
+  }
   const exportCsv = () => {
     const esc = (v: string) => `"${v.replace(/"/g, '""')}"`
-    const header = ['رقم الحادث', 'نوع الحادث', 'الموقع', 'التوقيت', 'الجهة المبلغة', 'حالة البلاغ']
-    const lines = rows.map((r) =>
-      [r.id, INCIDENT_TYPE_LABEL[r.type], r.location, r.time, r.agency, LOG_STATUS_LABEL[r.status]]
-        .map(esc)
-        .join(','),
-    )
-    const csv = '﻿' + [header.map(esc).join(','), ...lines].join('\n')
-    const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }))
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'incident-log.csv'
-    a.click()
-    URL.revokeObjectURL(url)
+    const csv = '﻿' + [ ['رقم الحادث', 'نوع الحادث', 'الموقع', 'التوقيت', 'الجهة المبلغة', 'حالة البلاغ'].map(esc).join(','), ...exportRows().map((r) => r.map(esc).join(',')) ].join('\n')
+    download(csv, 'text/csv;charset=utf-8', 'incident-log.csv')
+  }
+  const exportPdf = () => {
+    const win = window.open('', '_blank', 'noopener,noreferrer,width=900,height=700')
+    if (!win) return
+    win.document.write(`<html dir="rtl"><head><title>تقرير الحوادث</title><style>body{font-family:Arial;padding:24px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #bbb;padding:8px;text-align:right}h1{color:#123}</style></head><body><h1>تقرير الحوادث</h1><table><tr>${['رقم الحادث', 'نوع الحادث', 'الموقع', 'التوقيت', 'الجهة المبلغة', 'حالة البلاغ'].map((h) => `<th>${h}</th>`).join('')}</tr>${exportRows().map((r) => `<tr>${r.map((v) => `<td>${v}</td>`).join('')}</tr>`).join('')}</table><script>window.onload=()=>window.print()</script></body></html>`)
+    win.document.close()
   }
 
   const menuRow = menu ? rows.find((r) => r.id === menu.id) : undefined
@@ -137,8 +143,12 @@ export function IncidentLogs({ aiFilterEnabled }: { aiFilterEnabled: boolean }) 
               className="flex h-10 items-center gap-1.5 rounded-xl border border-border bg-secondary/60 px-3 text-xs text-muted-foreground transition-colors hover:border-cyan/50 hover:text-foreground disabled:opacity-40"
             >
               <Download className="size-3.5" aria-hidden />
-              تصدير التقرير
+              Excel / CSV
             </button>
+            <button type="button" onClick={exportPdf} disabled={rows.length === 0} className="flex h-10 items-center gap-1.5 rounded-xl border border-border bg-secondary/60 px-3 text-xs text-muted-foreground transition-colors hover:border-cyan/50 hover:text-foreground disabled:opacity-40">
+              <FileText className="size-3.5" aria-hidden /> PDF
+            </button>
+            <button type="button" onClick={exportExcel} disabled={rows.length === 0} className="sr-only">تصدير Excel</button>
           </div>
         </div>
 

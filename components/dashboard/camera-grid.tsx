@@ -122,17 +122,20 @@ export function CameraGrid({
   onFocus,
   onDispatch,
   layout,
+  query = '',
 }: {
   focusedId: string | null
   onFocus: (id: string) => void
   onDispatch: (camId: string) => void
   layout: LayoutMode
+  query?: string
 }) {
-  const primaryId = focusedId ?? CAMERAS[0].id
+  const visibleCameras = CAMERAS.filter((cam) => !query.trim() || `${cam.id} ${cam.number} ${cam.location}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()))
+  const primaryId = focusedId ?? visibleCameras[0]?.id ?? CAMERAS[0].id
   const ordered =
     layout === 'focus'
       ? [...CAMERAS].sort((a, b) => (a.id === primaryId ? -1 : b.id === primaryId ? 1 : 0))
-      : CAMERAS
+      : visibleCameras
 
   const gridClass =
     layout === '2x2'
@@ -147,7 +150,7 @@ export function CameraGrid({
         <h2 id="cams-title" className="text-sm font-bold">
           لقطات الكاميرات
           <span className="ms-2 text-xs font-normal text-muted-foreground">
-            {CAMERAS.length} كاميرات · لقطات ثابتة وبيانات رصد تجريبية
+            {visibleCameras.length} كاميرات · لقطات ثابتة وبيانات رصد تجريبية
           </span>
         </h2>
         <span className="rounded-lg border border-border bg-secondary/60 px-2.5 py-1 text-xs text-muted-foreground">
@@ -155,7 +158,7 @@ export function CameraGrid({
         </span>
       </div>
       <div className={gridClass}>
-        {ordered.map((cam, i) => (
+        {ordered.length === 0 ? <p className="rounded-xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">لا توجد كاميرات مطابقة للبحث</p> : ordered.map((cam, i) => (
           <CameraTile
             key={cam.id}
             cam={cam}
