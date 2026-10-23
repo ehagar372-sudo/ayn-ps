@@ -75,6 +75,25 @@
   --resolved: #10b981;
 }
 
+.light,
+:root:not(.dark) {
+  color-scheme: light;
+  --background: #f4f7fb;
+  --foreground: #162033;
+  --card: #ffffff;
+  --card-foreground: #162033;
+  --popover: #ffffff;
+  --popover-foreground: #162033;
+  --secondary: #e8eef7;
+  --secondary-foreground: #162033;
+  --muted: #e8eef7;
+  --muted-foreground: #60708c;
+  --accent: #e8eef7;
+  --accent-foreground: #162033;
+  --border: #d2dbea;
+  --input: #d2dbea;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

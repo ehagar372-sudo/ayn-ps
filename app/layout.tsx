@@ -2,6 +2,7 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Cairo, Geist_Mono } from 'next/font/google'
 import './globals.css'
+import { AppPreferences } from '@/components/app-preferences'
 
 const cairo = Cairo({
   subsets: ['arabic', 'latin'],
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  colorScheme: 'dark',
+  colorScheme: 'dark light',
   themeColor: '#0a0e17',
 }
 
@@ -39,10 +40,11 @@ export default function RootLayout({
     <html
       lang="ar"
       dir="rtl"
-      className={`bg-background ${cairo.variable} ${geistMono.variable}`}
+      className={`dark bg-background ${cairo.variable} ${geistMono.variable}`}
     >
       <body className="antialiased">
         {children}
+        <AppPreferences />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
