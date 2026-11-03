@@ -40,7 +40,7 @@ function manualAlert(camId: string | null, seq: number): Alert {
   }
 }
 
-export function Dashboard() {
+export function Dashboard({ isAdmin = false, userName }: { isAdmin?: boolean; userName?: string }) {
   const router = useRouter()
   const [view, setView] = useState<View>('dashboard')
   const [layout, setLayout] = useState<LayoutMode>('2x2')
@@ -138,6 +138,8 @@ export function Dashboard() {
         cameraNormal={cameraNormal}
         activeAlerts={visibleAlerts.length}
         resolvedCount={resolved}
+        isAdmin={isAdmin}
+        userName={userName}
       />
 
       <main className="flex min-w-0 flex-1 flex-col gap-4">

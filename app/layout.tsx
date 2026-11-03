@@ -15,11 +15,19 @@ const geistMono = Geist_Mono({
   variable: '--font-mono',
 })
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : 'http://localhost:3000')
+
 export const metadata: Metadata = {
-  title: 'نظام عين - AI Surveillance System',
+  metadataBase: new URL(siteUrl),
+  applicationName: 'نظام عين',
+  title: {
+    default: 'نظام عين | مراقبة الطرق بالذكاء الاصطناعي',
+    template: '%s | نظام عين',
+  },
   description:
-    'لوحة تحكم نظام عين للرصد الذكي: مراقبة البث المباشر، كشف الحوادث بالذكاء الاصطناعي، والإبلاغ الفوري للجهات المختصة.',
-  generator: 'v0.app',
+    'نظام عين: منصة تربط بلاغات المجتمع بغرفة العمليات، مع لوحة تحكم للمشرفين لمتابعة الحوادث والتنبيهات على الطرق.',
   icons: {
     icon: '/ain-logo.svg',
     apple: '/ain-logo.svg',
@@ -37,11 +45,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html
-      lang="ar"
-      dir="rtl"
-      className={`dark bg-background ${cairo.variable} ${geistMono.variable}`}
-    >
+    <html lang="ar" dir="rtl" className={`dark bg-background ${cairo.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <body className="antialiased">
         {children}
         <AppPreferences />

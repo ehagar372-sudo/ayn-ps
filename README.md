@@ -1,33 +1,73 @@
-# ayn-ps
+# نظام عين (ayn-ps)
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [v0](https://v0.app).
+منصة لمراقبة الطرق وإدارة البلاغات: بلاغات المواطنين من جهة، ولوحة غرفة عمليات للمشرفين من جهة أخرى.
 
-## Built with v0
+> **حالة المشروع:** نموذج متقدّم لمشروع تخرج. واجهة الكاميرات والتنبيهات في لوحة المشرف تعرض **بيانات ولقطات ثابتة تجريبية**. لا يوجد بثّ مباشر ولا نموذج ذكاء اصطناعي متصل فعلياً (انظر «قيد التطوير»).
 
-This repository is linked to a [v0](https://v0.app) project. You can continue developing by visiting the link below -- start new chats to make changes, and v0 will push commits directly to this repo. Every merge to `main` will automatically deploy.
+## التقنيات
 
-[Continue working on v0 →](https://v0.app/chat/projects/prj_7GhkpKgjTHoe2tD5mmETqV6AGdfU)
+- [Next.js 16](https://nextjs.org) (App Router) + React 19 + TypeScript
+- Tailwind CSS 4
+- [Better Auth](https://better-auth.com) للمصادقة (بريد وكلمة مرور)
+- PostgreSQL (Neon) عبر Drizzle ORM
+- Zod للتحقق من المدخلات
 
-## Getting Started
+## المسارات
 
-First, run the development server:
+| المسار | الوصول | الوصف |
+|---|---|---|
+| `/` | عام | الصفحة الرئيسية |
+| `/report` | عام | نموذج بلاغ المواطن (يحفظ في قاعدة البيانات ويعيد رقماً مرجعياً) |
+| `/sign-in` | عام | دخول المشرفين (يحوّل مباشرة إن كنت مسجّلاً) |
+| `/sign-up` | عام | حساب عادي. **لا يمنح** صلاحية غرفة العمليات |
+| `/supervisor` | مشرف أو مدير (نشط) | لوحة غرفة العمليات |
+| `/supervisor/manage` | مدير (نشط) | إضافة المشرفين وإيقافهم |
+| `POST /api/reports` | عام (بحدّ معدّل) | استلام بلاغ مواطن |
+| `/api/cameras`، `/api/incidents`، `/api/analytics`، `/api/ingest` | مشرف أو مدير (نشط) | واجهات اللوحة |
+| `/api/auth/*` | عام | Better Auth |
+
+قواعد التحويل: غير المسجّل ← `/sign-in`؛ مسجّل بلا صلاحية ← `/`؛ مشرف يطلب صفحة المدير ← `/supervisor`.
+الصلاحيات تُقرأ من جدول `user` (الحقلان `role` و`status`) عبر `lib/session.ts` وهو المصدر الوحيد للحماية.
+
+## الأدوار
+
+- `admin`: لوحة المشرف + إدارة المشرفين.
+- `supervisor`: لوحة المشرف.
+- `citizen` (الافتراضي عند التسجيل): لا وصول للوحة ولا لواجهات `/api/*` المحمية.
+
+أول مدير يُعيَّن يدوياً في قاعدة البيانات:
+
+```sql
+UPDATE "user" SET role = 'admin', status = 'active' WHERE email = 'you@example.com';
+```
+
+## التشغيل محلياً
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
+cp .env.example .env.local   # ثم عبّئ القيم
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+المتغيرات المطلوبة:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| المتغير | الوصف |
+|---|---|
+| `DATABASE_URL` | رابط PostgreSQL |
+| `BETTER_AUTH_SECRET` | سر عشوائي طويل (مثلاً `openssl rand -base64 32`) |
+| `BETTER_AUTH_URL` | اختياري: عنوان الموقع الأساسي |
+| `NEXT_PUBLIC_SITE_URL` | اختياري: عنوان الموقع للبيانات الوصفية |
 
-## Learn More
+فحص الأنواع: `pnpm typecheck`.
 
-To learn more, take a look at the following resources:
+## قيد التطوير
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [v0 Documentation](https://v0.app/docs) - learn about v0 and how to use it.
+- ربط بطاقات اللوحة وسجل الحوادث بقاعدة البيانات بدل `lib/surveillance-data.ts` (بلاغات المواطنين تُخزَّن لكنها لا تظهر في اللوحة بعد).
+- بثّ كاميرات فعلي ونموذج استنتاج حقيقي عبر `/api/ingest`.
+- صفحة لتتبّع حالة البلاغ بالرقم المرجعي.
+- تحديد معدّل مشترك (مثل Upstash) بدل الحدّ داخل الذاكرة في `/api/reports`.
+- تفعيل فحص الأنواع أثناء البناء (`ignoreBuildErrors` في `next.config.mjs`) بعد أن يصبح `pnpm typecheck` نظيفاً.
+
+## الخصوصية
+
+وسيلة التواصل في بلاغ المواطن اختيارية وتُحفظ ضمن `incidents.metadata`. لا تُخزَّن بيانات مالية ولا كلمات مرور خارج جداول Better Auth.

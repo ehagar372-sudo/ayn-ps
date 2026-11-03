@@ -1,22 +1,20 @@
+import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import { headers } from 'next/headers'
-import { and, eq } from 'drizzle-orm'
 import { Dashboard } from '@/components/dashboard/dashboard'
-import { auth } from '@/lib/auth'
-import { db } from '@/lib/db'
-import { user } from '@/lib/db/schema'
+import { canAccessDashboard, getAccess } from '@/lib/session'
+
+export const metadata: Metadata = {
+  title: 'لوحة غرفة العمليات',
+  robots: { index: false, follow: false },
+}
 
 export default async function SupervisorPage() {
-  const session = await auth.api.getSession({ headers: await headers() })
-  if (!session?.user) redirect('/sign-in')
+  const access = await getAccess()
 
-  const [current] = await db
-    .select({ role: user.role, status: user.status })
-    .from(user)
-    .where(and(eq(user.id, session.user.id), eq(user.email, session.user.email)))
-    .limit(1)
+  // Signed out (or auth backend unavailable) -> sign in.
+  if (!access) redirect('/sign-in')
+  // Signed in but not an active admin/supervisor -> back to the public site.
+  if (!canAccessDashboard(access)) redirect('/')
 
-  if (!current || current.status !== 'active' || !['admin', 'supervisor'].includes(current.role)) redirect('/')
-
-  return <Dashboard />
+  return <Dashboard isAdmin={access.role === 'admin'} userName={access.name} />
 }
