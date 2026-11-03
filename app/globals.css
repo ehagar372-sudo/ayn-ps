@@ -322,3 +322,101 @@
     animation: scan-line 1.8s linear infinite;
   }
 }
+
+/* ---- Landing: hero background, intro splash ---- */
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate(-50%, 0) scale(1);
+  }
+  50% {
+    transform: translate(-46%, 24px) scale(1.08);
+  }
+}
+
+@keyframes drift-reverse {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-28px, -22px) scale(1.1);
+  }
+}
+
+@keyframes road-flow {
+  to {
+    stroke-dashoffset: -64;
+  }
+}
+
+@keyframes hero-scan {
+  0% {
+    transform: translateY(-10%);
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110%);
+    opacity: 0;
+  }
+}
+
+@keyframes intro-bar {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes intro-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@utility animate-drift {
+  animation: drift 14s ease-in-out infinite;
+}
+
+@utility animate-drift-reverse {
+  animation: drift-reverse 18s ease-in-out infinite;
+}
+
+@utility animate-road-flow {
+  animation: road-flow 3s linear infinite;
+}
+
+@utility animate-hero-scan {
+  animation: hero-scan 7s ease-in-out infinite;
+}
+
+@utility animate-intro-bar {
+  transform-origin: left center;
+  animation: intro-bar 1.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@utility animate-intro-rise {
+  animation: intro-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

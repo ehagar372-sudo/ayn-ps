@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import {
   Activity,
   Bell,
@@ -8,13 +9,16 @@ import {
   ClipboardList,
   Cpu,
   FileText,
+  House,
   LayoutDashboard,
   Lock,
   LogOut,
   Map as MapIcon,
+  Megaphone,
   Presentation,
   Settings,
   Siren,
+  Users,
   X,
   type LucideIcon,
 } from 'lucide-react'
@@ -29,6 +33,10 @@ type NavItem = {
   target?: string
   /** switches the main view instead of scrolling */
   view?: View
+  /** real page route: rendered as a link */
+  href?: string
+  /** only shown to admins */
+  adminOnly?: boolean
   /** item has no working feature yet */
   disabled?: boolean
 }
@@ -42,6 +50,9 @@ const NAV_ITEMS: NavItem[] = [
   { key: 'analytics', label: 'التحليلات', icon: Activity, target: 'sec-analytics' },
   { key: 'logs', label: 'سجل الحوادث', icon: ClipboardList, target: 'sec-logs' },
   { key: 'pitch', label: 'عن المشروع والتقنية', icon: Presentation, view: 'pitch' },
+  { key: 'home', label: 'الصفحة الرئيسية', icon: House, href: '/' },
+  { key: 'citizen-report', label: 'نموذج بلاغ المواطنين', icon: Megaphone, href: '/report' },
+  { key: 'supervisors', label: 'إدارة المشرفين', icon: Users, href: '/supervisor/manage', adminOnly: true },
   { key: 'reports', label: 'التقارير', icon: FileText, disabled: true },
   { key: 'system', label: 'النظام', icon: Cpu, disabled: true },
   { key: 'settings', label: 'الإعدادات', icon: Settings, disabled: true },
@@ -95,6 +106,8 @@ export function Sidebar({
   cameraNormal,
   activeAlerts,
   resolvedCount,
+  isAdmin = false,
+  userName,
 }: {
   view: View
   onViewChange: (v: View) => void
@@ -106,6 +119,8 @@ export function Sidebar({
   cameraNormal: number
   activeAlerts: number
   resolvedCount: number
+  isAdmin?: boolean
+  userName?: string
 }) {
   const [activeKey, setActiveKey] = useState('dashboard')
   const percent = cameraTotal ? Math.round((cameraNormal / cameraTotal) * 100) : 0
@@ -174,9 +189,26 @@ export function Sidebar({
         </div>
 
         <nav aria-label="أقسام لوحة التحكم" className="flex flex-col gap-1">
-          {NAV_ITEMS.map((item) => {
+          {NAV_ITEMS.filter((item) => !item.adminOnly || isAdmin).map((item) => {
             const Icon = item.icon
             const active = isActive(item)
+            const className = `flex h-10 items-center gap-3 rounded-xl border px-3 text-sm transition-all duration-300 ${
+              active
+                ? 'border-blue/40 bg-blue/15 font-semibold text-foreground shadow-[0_0_18px_-6px_var(--blue)]'
+                : item.disabled
+                  ? 'cursor-not-allowed border-transparent text-muted-foreground/50'
+                  : 'border-transparent text-muted-foreground hover:bg-secondary/70 hover:text-foreground'
+            }`
+
+            if (item.href) {
+              return (
+                <Link key={item.key} href={item.href} onClick={onClose} className={className}>
+                  <Icon className="size-4 shrink-0" aria-hidden />
+                  <span className="flex-1 truncate text-start">{item.label}</span>
+                </Link>
+              )
+            }
+
             return (
               <button
                 key={item.key}
@@ -186,13 +218,7 @@ export function Sidebar({
                 aria-current={active ? 'page' : undefined}
                 title={item.disabled ? 'غير متاح حاليًا' : item.label}
                 onClick={() => handleClick(item)}
-                className={`flex h-10 items-center gap-3 rounded-xl border px-3 text-sm transition-all duration-300 ${
-                  active
-                    ? 'border-blue/40 bg-blue/15 font-semibold text-foreground shadow-[0_0_18px_-6px_var(--blue)]'
-                    : item.disabled
-                      ? 'cursor-not-allowed border-transparent text-muted-foreground/50'
-                      : 'border-transparent text-muted-foreground hover:bg-secondary/70 hover:text-foreground'
-                }`}
+                className={className}
               >
                 <Icon className={`size-4 shrink-0 ${active ? 'text-cyan' : ''}`} aria-hidden />
                 <span className="flex-1 truncate text-start">{item.label}</span>
@@ -230,11 +256,11 @@ export function Sidebar({
 
         <div className="flex items-center gap-3 rounded-xl border border-border bg-secondary/40 p-2.5">
           <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-cyan/30 bg-cyan/10 text-sm font-bold text-cyan">
-            م
+            {(userName?.trim()?.[0] ?? 'م').toUpperCase()}
           </span>
           <div className="flex min-w-0 flex-1 flex-col leading-tight">
-            <span className="truncate text-xs font-semibold">مشرف غرفة العمليات</span>
-            <span className="truncate text-[10px] text-muted-foreground">جلسة مسجّلة الدخول</span>
+            <span className="truncate text-xs font-semibold">{userName?.trim() || 'مشرف غرفة العمليات'}</span>
+            <span className="truncate text-[10px] text-muted-foreground">{isAdmin ? 'مدير النظام' : 'مشرف'}</span>
           </div>
           <button
             type="button"

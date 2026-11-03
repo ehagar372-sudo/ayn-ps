@@ -41,3 +41,17 @@
 - No secret is hardcoded in source. Authentication uses `BETTER_AUTH_SECRET` from project Vars.
 - The shared Neon database contains verification records created during CRUD testing.
 - Camera assets remain generated still images and are intentionally labeled unavailable/offline for streaming purposes.
+
+## Routes & hardening pass
+- `lib/session.ts` is now the single source of truth for role/status checks (pages, server actions, API guard).
+- `requireSession()` now admits only active admins/supervisors. Previously any signed-in account (including a public sign-up) could read cameras/incidents and push events.
+- `/sign-in` and `/sign-up` redirect signed-in staff to `/supervisor`; `/supervisor/manage` sends non-admins to the right place instead of `/sign-in`.
+- `/sign-up` no longer claims to create supervisor accounts; it creates a plain account.
+- Supervisor management: deactivation revokes sessions (credentials kept so re-activation works), admins keep their role when toggled, new rows appear immediately, server actions return typed results with runtime validation.
+- Citizen reports are now persisted via `POST /api/reports` (honeypot + best-effort rate limit); the form no longer fabricates a reference number client-side.
+- Sidebar exposes real routes (home, citizen report, admin-only supervisor management).
+- Added `app/robots.ts`, `app/supervisor/loading.tsx`, security headers, `.env.example`, README.
+- Removed the language toggle (no English translation exists; it only flipped layout direction). Theme toggle is now a fixed corner button.
+
+## Not verified in this pass
+- No `pnpm install` / `next build` / browser run was possible in the authoring environment (no registry access). Files were syntax-checked only. Run `pnpm typecheck && pnpm build` before merging.

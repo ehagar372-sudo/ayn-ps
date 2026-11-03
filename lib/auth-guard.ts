@@ -1,14 +1,11 @@
-import { auth } from '@/lib/auth'
-import { headers } from 'next/headers'
+import { canAccessDashboard, getAccess } from '@/lib/session'
 
+/**
+ * Guard for the protected API routes. Only active admins and supervisors pass:
+ * a plain signed-in account (for example a citizen who signed up) must not be
+ * able to read cameras/incidents or push events.
+ */
 export async function requireSession() {
-  if (!process.env.DATABASE_URL || !process.env.BETTER_AUTH_SECRET) return null
-
-  try {
-    const session = await auth.api.getSession({ headers: await headers() })
-    return session?.user ? session : null
-  } catch {
-    // The preview should remain usable when its optional auth database is unavailable.
-    return null
-  }
+  const access = await getAccess()
+  return canAccessDashboard(access) ? access : null
 }
