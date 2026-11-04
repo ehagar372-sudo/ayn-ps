@@ -109,7 +109,7 @@ export function FilterBar({
 
   return (
     <section aria-label="أدوات التصفية" className="glass flex flex-col gap-3 rounded-2xl p-4">
-      <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
+      <div className="flex flex-wrap items-center gap-3">
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-sm font-semibold">التصفية</span>
           <PillSelect icon={Siren} label="نوع الحادث" value={filters.type} onChange={(v) => set('type', v)}>
@@ -132,7 +132,7 @@ export function FilterBar({
           </PillSelect>
         </div>
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center xl:ms-auto">
+        <div className="flex w-full min-w-0 flex-wrap items-center gap-2 xl:ms-auto xl:w-auto">
           <label className="flex h-10 items-center gap-2 rounded-xl border border-border bg-secondary/60 px-3 text-xs text-muted-foreground">
             الحالة
             <select value={filters.status} onChange={(e) => set('status', e.target.value)} className="bg-transparent text-foreground outline-none">
@@ -174,13 +174,13 @@ export function FilterBar({
             <ShieldCheck className={`size-4 ${filters.aiFilter ? 'text-cyan' : ''}`} aria-hidden />
             <span className="whitespace-nowrap">
               فلترة البلاغات الكاذبة
-              <span className="ms-1 text-muted-foreground" dir="ltr">
+              <span className="ms-1 hidden text-muted-foreground 2xl:inline" dir="ltr">
                 (AI False Alarm Filter)
               </span>
             </span>
           </button>
 
-          <label className="relative flex h-10 min-w-0 items-center sm:w-72">
+          <label className="relative flex h-10 w-full min-w-0 items-center sm:w-64">
             <span className="sr-only">بحث</span>
             <Search className="pointer-events-none absolute end-3 size-4 text-muted-foreground" aria-hidden />
             <input
