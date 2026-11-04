@@ -22,8 +22,11 @@
 | `/sign-up` | عام | حساب عادي. **لا يمنح** صلاحية غرفة العمليات |
 | `/supervisor` | مشرف أو مدير (نشط) | لوحة غرفة العمليات |
 | `/supervisor/manage` | مدير (نشط) | إضافة المشرفين وإيقافهم |
+| `/supervisor/reports` | مشرف أو مدير (نشط) | تقارير البلاغات من قاعدة البيانات مع تصدير CSV |
+| `/supervisor/system` | مدير (نشط) | حالة قاعدة البيانات والمكوّنات والنشر |
+| `/supervisor/settings` | مشرف أو مدير (نشط) | الاسم وكلمة المرور والجلسات |
 | `POST /api/reports` | عام (بحدّ معدّل) | استلام بلاغ مواطن |
-| `/api/cameras`، `/api/incidents`، `/api/analytics`، `/api/ingest` | مشرف أو مدير (نشط) | واجهات اللوحة |
+| `/api/cameras`، `/api/incidents`، `/api/analytics`، `/api/ingest`، `/api/export/incidents` | مشرف أو مدير (نشط) | واجهات اللوحة |
 | `/api/auth/*` | عام | Better Auth |
 
 قواعد التحويل: غير المسجّل ← `/sign-in`؛ مسجّل بلا صلاحية ← `/`؛ مشرف يطلب صفحة المدير ← `/supervisor`.

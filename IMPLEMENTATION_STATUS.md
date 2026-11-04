@@ -55,3 +55,10 @@
 
 ## Not verified in this pass
 - No `pnpm install` / `next build` / browser run was possible in the authoring environment (no registry access). Files were syntax-checked only. Run `pnpm typecheck && pnpm build` before merging.
+
+## Supervisor sections enabled
+- Sidebar items Reports / System / Settings are now real routes (`/supervisor/reports`, `/supervisor/system` (admin only), `/supervisor/settings`) instead of disabled placeholders.
+- Reports reads the `incidents` table (7d / 30d / all), shows totals, breakdowns and the latest 25, and exports CSV via `/api/export/incidents` (formula-injection safe, citizen contact info excluded).
+- System shows DB connectivity/latency, account and session counts, env variable presence (never values), deployment info and an honest feature list (live streaming and AI model are marked not connected).
+- Settings: change display name, change password (revokes other sessions), revoke other sessions, sign out.
+- Not run locally (no registry access in the authoring environment): run `pnpm typecheck && pnpm build`.
