@@ -53,9 +53,9 @@ const NAV_ITEMS: NavItem[] = [
   { key: 'home', label: 'الصفحة الرئيسية', icon: House, href: '/' },
   { key: 'citizen-report', label: 'نموذج بلاغ المواطنين', icon: Megaphone, href: '/report' },
   { key: 'supervisors', label: 'إدارة المشرفين', icon: Users, href: '/supervisor/manage', adminOnly: true },
-  { key: 'reports', label: 'التقارير', icon: FileText, disabled: true },
-  { key: 'system', label: 'النظام', icon: Cpu, disabled: true },
-  { key: 'settings', label: 'الإعدادات', icon: Settings, disabled: true },
+  { key: 'reports', label: 'التقارير', icon: FileText, href: '/supervisor/reports' },
+  { key: 'system', label: 'النظام', icon: Cpu, href: '/supervisor/system', adminOnly: true },
+  { key: 'settings', label: 'الإعدادات', icon: Settings, href: '/supervisor/settings' },
 ]
 
 function OverviewDonut({ percent }: { percent: number }) {
