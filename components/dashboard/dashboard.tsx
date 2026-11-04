@@ -126,7 +126,7 @@ export function Dashboard({ isAdmin = false, userName }: { isAdmin?: boolean; us
   const cameraNormal = CAMERAS.filter((c) => c.status === 'normal').length
 
   return (
-    <div className="mx-auto flex max-w-[1800px] items-start gap-4 p-3 md:p-4">
+    <div className="mx-auto flex max-w-[1800px] items-start gap-4 overflow-x-clip p-3 md:p-4">
       <Sidebar
         view={view}
         onViewChange={setView}
@@ -159,7 +159,7 @@ export function Dashboard({ isAdmin = false, userName }: { isAdmin?: boolean; us
           <div key="dashboard" className="flex flex-col gap-4 animate-fade-up">
             <FilterBar filters={filters} onChange={setFilters} />
 
-            <div className="grid gap-4 xl:grid-cols-[65fr_35fr]">
+            <div className="grid gap-4 xl:grid-cols-[minmax(0,65fr)_minmax(0,35fr)]">
               <div className="flex min-w-0 flex-col gap-4">
                 <CameraGrid
                   focusedId={focusedCam}
